@@ -13,8 +13,13 @@ namespace BrainfuckIntegerRepresentation
         private const string openingSegment = "[>";
         private const string closingSegment = "<-]";
 
-        // Finds the smallest possible Brainfuck representation of the given integer
-        public static string FindIntRepresentation(int intToRep, int maxIterations)
+        public static string FindIntRepresentation(int intToRep)
+        {
+            return FindIntRepresentation(intToRep, true, 0, 0);
+        }
+
+        // Finds the smallest possible Brainfuck representation of given integer
+        private static string FindIntRepresentation(int intToRep, bool beginChecks, int leftChecks, int rightChecks)
         {
             // No number below 15 is most efficiently represented through multiplication
             if (intToRep < 15)
@@ -65,9 +70,24 @@ namespace BrainfuckIntegerRepresentation
                 string representation = ToBrainfuck(factors);
 
                 // Return shorter representation if possible
-                if (maxIterations > 0 && ShorterRepresentation(intToRep, representation.Length, maxIterations) != null)
+                if (beginChecks || leftChecks > 0 || rightChecks > 0)
                 {
-                    return ShorterRepresentation(intToRep, representation.Length, maxIterations);
+                    string shorterRep;
+
+                    if (beginChecks)
+                    {
+                        int checkDistance = CheckDistance(intToRep, representation.Length);
+                        shorterRep = ShorterRepresentation(intToRep, representation.Length, checkDistance, checkDistance);
+                    }
+                    else
+                    {
+                        shorterRep = ShorterRepresentation(intToRep, representation.Length, leftChecks, rightChecks);
+                    }
+
+                    if (shorterRep != null)
+                    {
+                        return shorterRep;
+                    }
                 }
 
                 return representation;
@@ -78,25 +98,68 @@ namespace BrainfuckIntegerRepresentation
                 string representation = CharString('+', intToRep);
 
                 // Return shorter representation if possible
-                if (maxIterations > 0 && ShorterRepresentation(intToRep, representation.Length, maxIterations) != null)
+                if (beginChecks || leftChecks > 0 || rightChecks > 0)
                 {
-                    return ShorterRepresentation(intToRep, representation.Length, maxIterations);
+                    string shorterRep;
+
+                    if (beginChecks)
+                    {
+                        int checkDistance = CheckDistance(intToRep, representation.Length);
+                        shorterRep = ShorterRepresentation(intToRep, representation.Length, checkDistance, checkDistance);
+                    }
+                    else
+                    {
+                        shorterRep = ShorterRepresentation(intToRep, representation.Length, leftChecks, rightChecks);
+                    }
+
+                    if (shorterRep != null)
+                    {
+                        return shorterRep;
+                    }
                 }
 
                 return representation;
             }
         }
 
+        // Returns the distance necessary to check in each direction in order to ensure optimal representation length
+        private static int CheckDistance(int intToRep, int repLength)
+        {
+            return repLength - ClosestPowerOfTwoLength(intToRep);
+        }
+
+        // Returns the representation length of the closest power of two
+        private static int ClosestPowerOfTwoLength(int num)
+        {
+            int closestPowerOfTwo = 1;
+
+            while (closestPowerOfTwo * 2 < num)
+            {
+                closestPowerOfTwo *= 2;
+            }
+
+            return FindIntRepresentation(closestPowerOfTwo, false, 0, 0).Length;
+        }
+
         // Returns a shorter representation of the given int as an increment or decrement from adjacent integers or null if none found
-        private static string ShorterRepresentation(int intToRep, int repLength, int maxIterations)
+        private static string ShorterRepresentation(int intToRep, int repLength, int leftChecks, int rightChecks)
         {
             string shorterRep = null;
 
-            string decrementedRep = FindIntRepresentation(intToRep - 1, maxIterations - 1);
-            string incrementedRep = FindIntRepresentation(intToRep + 1, maxIterations - 1);
+            string decrementedRep = "";
+            string incrementedRep = "";
+
+            if (leftChecks > 0)
+            {
+                decrementedRep = FindIntRepresentation(intToRep - 1, false, leftChecks - 1, 0);
+            }
+            if (rightChecks > 0)
+            {
+                incrementedRep = FindIntRepresentation(intToRep + 1, false, 0, rightChecks - 1);
+            }
 
             // If most efficient to represent integer as increment from previous integer
-            if (decrementedRep.Length + CellOffset(decrementedRep) + 1 < repLength)
+            if (leftChecks > 0 && decrementedRep.Length + CellOffset(decrementedRep) + 1 < repLength)
             {
                 int cellOffset = CellOffset(decrementedRep);
                 string cellOffsetString = CharString('>', cellOffset);
@@ -104,7 +167,7 @@ namespace BrainfuckIntegerRepresentation
             }
 
             // If most efficient to represent integer as decrement from next integer
-            if (incrementedRep.Length + CellOffset(incrementedRep) + 1 < repLength)
+            if (rightChecks > 0 && incrementedRep.Length + CellOffset(incrementedRep) + 1 < repLength)
             {
                 // If shorter representation not assigned
                 if (shorterRep == null)
@@ -223,6 +286,7 @@ namespace BrainfuckIntegerRepresentation
         {
             int endingIndex = representation.LastIndexOf(']');
 
+            // Return zero if no data shifts
             if (endingIndex == -1)
             {
                 return 0;
@@ -234,6 +298,7 @@ namespace BrainfuckIntegerRepresentation
             int shiftsBeforeEnding = beforeEnding.Split('>').Length - 1;
             int shiftsAfterEnding = afterEnding.Split('>').Length - 1;
 
+            // Return the number of shifts after multiplication subtracted from the number of shifts during multiplication
             return shiftsBeforeEnding - shiftsAfterEnding;
         }
     }

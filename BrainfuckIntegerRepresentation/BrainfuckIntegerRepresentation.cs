@@ -61,7 +61,7 @@ namespace BrainfuckIntegerRepresentation
 
         private static string FindIntRepresentation(int intToRep)
         {
-            return IntRepresentation.FindIntRepresentation(intToRep, 4);
+            return IntRepresentation.FindIntRepresentation(intToRep);
         }
 
         private static void PrintRepresentation(int intToRep, string intRepresentation)
