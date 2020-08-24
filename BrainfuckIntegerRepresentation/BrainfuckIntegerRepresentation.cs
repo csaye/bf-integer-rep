@@ -25,23 +25,43 @@ namespace BrainfuckIntegerRepresentation
         {
             int intToRep = UserInput.GetPositiveInt();
             string intRepresentation = FindIntRepresentation(intToRep);
-            PrintRepresentation(intToRep, intRepresentation);
+
+            bool minimalPrint = UserInput.MinimalPrint();
+
+            if (minimalPrint)
+            {
+                PrintRepresentationMinimal(intToRep, intRepresentation);
+            }
+            else
+            {
+                PrintRepresentation(intToRep, intRepresentation);
+            }
         }
 
         private static void FindIntRange()
         {
             int[] intsToRep = UserInput.GetPositiveIntRange();
 
+            bool minimalPrint = UserInput.MinimalPrint();
+
             foreach (int i in intsToRep)
             {
                 string intRepresentation = FindIntRepresentation(i);
-                PrintRepresentation(i, intRepresentation);
+
+                if (minimalPrint)
+                {
+                    PrintRepresentationMinimal(i, intRepresentation);
+                }
+                else
+                {
+                    PrintRepresentation(i, intRepresentation);
+                }
             }
         }
 
         private static string FindIntRepresentation(int intToRep)
         {
-            return IntRepresentation.FindIntRepresentation(intToRep, true);
+            return IntRepresentation.FindIntRepresentation(intToRep, 4);
         }
 
         private static void PrintRepresentation(int intToRep, string intRepresentation)
@@ -68,6 +88,11 @@ namespace BrainfuckIntegerRepresentation
             {
                 Console.WriteLine($"The result will be offset by {cellOffset} cells.");
             }
+        }
+
+        private static void PrintRepresentationMinimal(int intToRep, string representation)
+        {
+            Console.WriteLine($"{intToRep}: {representation}");
         }
     }
 }

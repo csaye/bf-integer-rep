@@ -125,5 +125,25 @@ namespace BrainfuckIntegerRepresentation
 
             return true;
         }
+
+        // Returns true if the user requests input of minimal print and false is the user requests informative print
+        public static bool MinimalPrint()
+        {
+            // Continue asking user for input while invalid strings entered
+            while (true)
+            {
+                Console.WriteLine("Enter \"min\" for minimal print or \"info\" for informative print.");
+                string userInput = Console.ReadLine();
+
+                if (userInput.ToLower() == "min")
+                {
+                    return true;
+                }
+                else if (userInput.ToLower() == "info")
+                {
+                    return false;
+                }
+            }
+        }
     }
 }

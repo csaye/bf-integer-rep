@@ -14,7 +14,7 @@ namespace BrainfuckIntegerRepresentation
         private const string closingSegment = "<-]";
 
         // Finds the smallest possible Brainfuck representation of the given integer
-        public static string FindIntRepresentation(int intToRep, bool checkAdjacent)
+        public static string FindIntRepresentation(int intToRep, int maxIterations)
         {
             // No number below 15 is most efficiently represented through multiplication
             if (intToRep < 15)
@@ -59,9 +59,9 @@ namespace BrainfuckIntegerRepresentation
                 string representation = ToBrainfuck(factors);
 
                 // Return shorter representation if possible
-                if (checkAdjacent && ShorterRepresentation(intToRep, representation.Length) != null)
+                if (maxIterations > 0 && ShorterRepresentation(intToRep, representation.Length, maxIterations) != null)
                 {
-                    return ShorterRepresentation(intToRep, representation.Length);
+                    return ShorterRepresentation(intToRep, representation.Length, maxIterations);
                 }
 
                 return representation;
@@ -72,9 +72,9 @@ namespace BrainfuckIntegerRepresentation
                 string representation = ToBrainfuck(intToRep);
 
                 // Return shorter representation if possible
-                if (checkAdjacent && ShorterRepresentation(intToRep, representation.Length) != null)
+                if (maxIterations > 0 && ShorterRepresentation(intToRep, representation.Length, maxIterations) != null)
                 {
-                    return ShorterRepresentation(intToRep, representation.Length);
+                    return ShorterRepresentation(intToRep, representation.Length, maxIterations);
                 }
 
                 return representation;
@@ -82,12 +82,12 @@ namespace BrainfuckIntegerRepresentation
         }
 
         // Returns a shorter representation of the given int as an increment or decrement from adjacent integers or null if none found
-        private static string ShorterRepresentation(int intToRep, int repLength)
+        private static string ShorterRepresentation(int intToRep, int repLength, int maxIterations)
         {
             string shorterRep = null;
 
-            string incrementedRep = FindIntRepresentation(intToRep + 1, false); 
-            string decrementedRep = FindIntRepresentation(intToRep - 1, false);
+            string incrementedRep = FindIntRepresentation(intToRep + 1, maxIterations - 1); 
+            string decrementedRep = FindIntRepresentation(intToRep - 1, maxIterations - 1);
 
             // If most efficient to represent integer as increment from previous integer
             if (decrementedRep.Length + 1 < repLength)
