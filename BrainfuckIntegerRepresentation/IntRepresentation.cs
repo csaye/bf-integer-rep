@@ -13,9 +13,16 @@ namespace BrainfuckIntegerRepresentation
         private const string openingSegment = "[>";
         private const string closingSegment = "<-]";
 
-        public static string FindIntRepresentation(int intToRep)
+        // Finds the smallest possible Brainfuck representation of the given integer
+        public static string FindIntRepresentation(int intToRep, bool checkAdjacent)
         {
-            // If more efficient to represent integer through multiplication
+            // No number below 15 is most efficiently represented through multiplication
+            if (intToRep < 15)
+            {
+                return ToBrainfuck(intToRep);
+            }
+
+            // If most efficient to represent integer through multiplication
             if (MostEfficientAsProduct(intToRep))
             {
                 List<int> factors = new List<int>();
@@ -27,17 +34,68 @@ namespace BrainfuckIntegerRepresentation
 
                 bool allFactorsMostEfficient = false;
 
+                // Loop while all factors not most efficient
                 while (!allFactorsMostEfficient)
                 {
+                    for (int i = 0; i < factors.Count; i++)
+                    {
+                        // If factor most efficient as product, remove factor, add smallest factor pair, and break to loop again
+                        if (MostEfficientAsProduct(factors[i]))
+                        {
+                            int[] factorPair = SmallestFactorPair(factors[i]);
 
+                            factors.Add(factorPair[0]);
+                            factors.Add(factorPair[1]);
+
+                            factors.RemoveAt(i);
+                            break;
+                        }
+
+                        // If no factors most efficient as product, break loop
+                        allFactorsMostEfficient = true;
+                    }
                 }
 
-                return ToBrainfuck(factors);
+                string representation = ToBrainfuck(factors);
+
+                // Return shorter representation if possible
+                if (checkAdjacent && ShorterRepresentation(intToRep, representation.Length) != null)
+                {
+                    return ShorterRepresentation(intToRep, representation.Length);
+                }
+
+                return representation;
             }
+            // If not efficient to represent number through multiplication
             else
             {
-                return ToBrainfuck(intToRep);
+                string representation = ToBrainfuck(intToRep);
+
+                // Return shorter representation if possible
+                if (checkAdjacent && ShorterRepresentation(intToRep, representation.Length) != null)
+                {
+                    return ShorterRepresentation(intToRep, representation.Length);
+                }
+
+                return representation;
             }
+        }
+
+        private static string ShorterRepresentation(int intToRep, int repLength)
+        {
+            // If most efficient to represent integer as increment from previous integer
+            if (FindIntRepresentation(intToRep - 1, false).Length + 1 < repLength)
+            {
+                return $"{FindIntRepresentation(intToRep - 1, false)}+";
+            }
+
+            // If most efficient to represent integer as decrement from next integer
+            if (FindIntRepresentation(intToRep + 1, false).Length + 1 < repLength)
+            {
+                return $"{FindIntRepresentation(intToRep + 1, false)}-";
+            }
+
+            return null;
         }
 
         // Returns whether the given integer is most efficiently represented through multiplication
@@ -71,7 +129,7 @@ namespace BrainfuckIntegerRepresentation
 
                 currentNum--;
             }
-
+            
             // If prime number
             return new int[2] {1, product};
         }
