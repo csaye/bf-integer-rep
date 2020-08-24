@@ -4,48 +4,27 @@ namespace BrainfuckIntegerRepresentation
 {
     class BrainfuckIntegerRepresentation
     {
-        private static int numToRep;
-
         private static void Main(string[] args)
         {
-            GetUserInput();
+            int intToRep = GetUserInput();
+            string intRepresentation = FindIntRepresentation(intToRep);
+            PrintRepresentation(intToRep, intRepresentation);
         }
 
-        // Gets a positive integer from the user and assigns its value to numToRep
-        private static void GetUserInput()
+        private static int GetUserInput()
         {
-            bool inputParsed = false;
-
-            while (!inputParsed)
-            {
-                Console.WriteLine("Please enter a positive integer.");
-                string userInput = Console.ReadLine();
-
-                inputParsed = TryParse(userInput);
-            }
+            return UserInput.GetPositiveInt();
         }
 
-        // Returns whether parsing of given input was successful
-        private static bool TryParse(string userInput)
+        private static string FindIntRepresentation(int intToRep)
         {
-            if (int.TryParse(userInput, out numToRep))
-            {
-                // Positive integer
-                if (numToRep > 0)
-                {
-                    return true;
-                }
-                // Negative integer
-                else
-                {
-                    return false;
-                }
-            }
-            // Not integer
-            else
-            {
-                return false;
-            }
+            return null;
+        }
+
+        private static void PrintRepresentation(int intToRep, string intRepresentation)
+        {
+            Console.WriteLine($"The smallest representation of {intToRep} in Brainfuck is:");
+            Console.WriteLine(intRepresentation);
         }
     }
 }
