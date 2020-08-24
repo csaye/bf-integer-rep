@@ -179,6 +179,9 @@ namespace BrainfuckIntegerRepresentation
         // Returns the Brainfuck representation of the multiplication of all given factors
         private static string ToBrainfuck(List<int> factors)
         {
+            factors.Sort();
+            factors.Reverse();
+
             StringBuilder sb = new StringBuilder();
 
             int numClosingSegments = 0;

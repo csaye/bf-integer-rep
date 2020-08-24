@@ -6,14 +6,37 @@ namespace BrainfuckIntegerRepresentation
     {
         private static void Main(string[] args)
         {
-            int intToRep = GetUserInput();
+            if (UserInputSingular())
+            {
+                FindInt();
+            }
+            else
+            {
+                FindIntRange();
+            }
+        }
+
+        private static bool UserInputSingular()
+        {
+            return UserInput.SingularIntInput();
+        }
+
+        private static void FindInt()
+        {
+            int intToRep = UserInput.GetPositiveInt();
             string intRepresentation = FindIntRepresentation(intToRep);
             PrintRepresentation(intToRep, intRepresentation);
         }
 
-        private static int GetUserInput()
+        private static void FindIntRange()
         {
-            return UserInput.GetPositiveInt();
+            int[] intsToRep = UserInput.GetPositiveIntRange();
+
+            foreach (int i in intsToRep)
+            {
+                string intRepresentation = FindIntRepresentation(i);
+                PrintRepresentation(i, intRepresentation);
+            }
         }
 
         private static string FindIntRepresentation(int intToRep)
