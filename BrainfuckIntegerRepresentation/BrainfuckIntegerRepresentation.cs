@@ -2,7 +2,7 @@
 
 namespace BrainfuckIntegerRepresentation
 {
-    class BrainfuckIntegerRepresentation
+    public class BrainfuckIntegerRepresentation
     {
         private static void Main(string[] args)
         {
@@ -18,7 +18,7 @@ namespace BrainfuckIntegerRepresentation
 
         private static string FindIntRepresentation(int intToRep)
         {
-            return null;
+            return IntRepresentation.FindIntRepresentation(intToRep);
         }
 
         private static void PrintRepresentation(int intToRep, string intRepresentation)
