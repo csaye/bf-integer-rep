@@ -81,21 +81,37 @@ namespace BrainfuckIntegerRepresentation
             }
         }
 
+        // Returns a shorter representation of the given int as an increment or decrement from adjacent integers or null if none found
         private static string ShorterRepresentation(int intToRep, int repLength)
         {
+            string shorterRep = null;
+
+            string incrementedRep = FindIntRepresentation(intToRep + 1, false); 
+            string decrementedRep = FindIntRepresentation(intToRep - 1, false);
+
             // If most efficient to represent integer as increment from previous integer
-            if (FindIntRepresentation(intToRep - 1, false).Length + 1 < repLength)
+            if (decrementedRep.Length + 1 < repLength)
             {
-                return $"{FindIntRepresentation(intToRep - 1, false)}+";
+                shorterRep = $"{decrementedRep}+";
             }
 
             // If most efficient to represent integer as decrement from next integer
-            if (FindIntRepresentation(intToRep + 1, false).Length + 1 < repLength)
+            if (incrementedRep.Length + 1 < repLength)
             {
-                return $"{FindIntRepresentation(intToRep + 1, false)}-";
+                // If shorter representation not assigned
+                if (shorterRep == null)
+                {
+                    shorterRep = $"{incrementedRep}-";
+                }
+
+                // If value less than shorter representation
+                if (incrementedRep.Length + 1 < shorterRep.Length)
+                {
+                    shorterRep = $"{incrementedRep}-";
+                }
             }
 
-            return null;
+            return shorterRep;
         }
 
         // Returns whether the given integer is most efficiently represented through multiplication
