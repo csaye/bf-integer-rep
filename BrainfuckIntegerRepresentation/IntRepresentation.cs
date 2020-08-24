@@ -19,7 +19,7 @@ namespace BrainfuckIntegerRepresentation
             // No number below 15 is most efficiently represented through multiplication
             if (intToRep < 15)
             {
-                return ToBrainfuck(intToRep);
+                return CharString('+', intToRep);
             }
 
             // If most efficient to represent integer through multiplication
@@ -75,7 +75,7 @@ namespace BrainfuckIntegerRepresentation
             // If not efficient to represent number through multiplication
             else
             {
-                string representation = ToBrainfuck(intToRep);
+                string representation = CharString('+', intToRep);
 
                 // Return shorter representation if possible
                 if (maxIterations > 0 && ShorterRepresentation(intToRep, representation.Length, maxIterations) != null)
@@ -92,28 +92,34 @@ namespace BrainfuckIntegerRepresentation
         {
             string shorterRep = null;
 
-            string incrementedRep = FindIntRepresentation(intToRep + 1, maxIterations - 1); 
             string decrementedRep = FindIntRepresentation(intToRep - 1, maxIterations - 1);
+            string incrementedRep = FindIntRepresentation(intToRep + 1, maxIterations - 1);
 
             // If most efficient to represent integer as increment from previous integer
-            if (decrementedRep.Length + 1 < repLength)
+            if (decrementedRep.Length + CellOffset(decrementedRep) + 1 < repLength)
             {
-                shorterRep = $"{decrementedRep}+";
+                int cellOffset = CellOffset(decrementedRep);
+                string cellOffsetString = CharString('>', cellOffset);
+                shorterRep = $"{decrementedRep}{cellOffsetString}+";
             }
 
             // If most efficient to represent integer as decrement from next integer
-            if (incrementedRep.Length + 1 < repLength)
+            if (incrementedRep.Length + CellOffset(incrementedRep) + 1 < repLength)
             {
                 // If shorter representation not assigned
                 if (shorterRep == null)
                 {
-                    shorterRep = $"{incrementedRep}-";
+                    int cellOffset = CellOffset(incrementedRep);
+                    string cellOffsetString = CharString('>', cellOffset);
+                    shorterRep = $"{incrementedRep}{cellOffsetString}+";
                 }
 
                 // If value less than shorter representation
-                if (incrementedRep.Length + 1 < shorterRep.Length)
+                if (incrementedRep.Length + CellOffset(incrementedRep) + 1 < shorterRep.Length)
                 {
-                    shorterRep = $"{incrementedRep}-";
+                    int cellOffset = CellOffset(incrementedRep);
+                    string cellOffsetString = CharString('>', cellOffset);
+                    shorterRep = $"{incrementedRep}{cellOffsetString}+";
                 }
             }
 
@@ -169,14 +175,14 @@ namespace BrainfuckIntegerRepresentation
             return size;
         }
 
-        // Returns the given integer as a series of plus signs
-        private static string ToBrainfuck(int intToRep)
+        // Returns the given char repeated for length number of times
+        private static string CharString(char ch, int length)
         {
             StringBuilder sb = new StringBuilder();
 
-            for (int i = 0; i < intToRep; i++)
+            for (int i = 0; i < length; i++)
             {
-                sb.Append('+');
+                sb.Append(ch);
             }
 
             return sb.ToString();
@@ -193,13 +199,13 @@ namespace BrainfuckIntegerRepresentation
             int numClosingSegments = 0;
 
             // Add first factor
-            sb.Append(ToBrainfuck(factors[0]));
+            sb.Append(CharString('+', factors[0]));
 
             // Add rest of factors
             for (int i = 1; i < factors.Count; i++)
             {
                 sb.Append(openingSegment);
-                sb.Append(ToBrainfuck(factors[i]));
+                sb.Append(CharString('+', factors[i]));
 
                 numClosingSegments++;
             }
@@ -210,6 +216,25 @@ namespace BrainfuckIntegerRepresentation
             }
 
             return sb.ToString();
+        }
+
+        // Returns the cell offset of given representation as a count of the number of data point shifts
+        public static int CellOffset(string representation)
+        {
+            int endingIndex = representation.LastIndexOf(']');
+
+            if (endingIndex == -1)
+            {
+                return 0;
+            }
+
+            string beforeEnding = representation.Substring(0, endingIndex);
+            string afterEnding = representation.Substring(endingIndex);
+
+            int shiftsBeforeEnding = beforeEnding.Split('>').Length - 1;
+            int shiftsAfterEnding = afterEnding.Split('>').Length - 1;
+
+            return shiftsBeforeEnding - shiftsAfterEnding;
         }
     }
 }

@@ -61,7 +61,7 @@ namespace BrainfuckIntegerRepresentation
 
         private static string FindIntRepresentation(int intToRep)
         {
-            return IntRepresentation.FindIntRepresentation(intToRep, 0);
+            return IntRepresentation.FindIntRepresentation(intToRep, 4);
         }
 
         private static void PrintRepresentation(int intToRep, string intRepresentation)
@@ -77,8 +77,7 @@ namespace BrainfuckIntegerRepresentation
 
             Console.WriteLine(intRepresentation);
 
-            // Find cell offset by counting number of data pointer shifts in integer representation
-            int cellOffset = intRepresentation.Split('>').Length - 1;
+            int cellOffset = IntRepresentation.CellOffset(intRepresentation);
 
             if (cellOffset == 1)
             {
@@ -92,8 +91,7 @@ namespace BrainfuckIntegerRepresentation
 
         private static void PrintRepresentationMinimal(int intToRep, string representation)
         {
-            //Console.WriteLine($"{intToRep}: {representation}");
-            Console.WriteLine(representation);
+            Console.WriteLine($"{intToRep}: {representation}");
         }
     }
 }
