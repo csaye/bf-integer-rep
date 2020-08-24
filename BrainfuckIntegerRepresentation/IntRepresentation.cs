@@ -37,6 +37,8 @@ namespace BrainfuckIntegerRepresentation
                 // Loop while all factors not most efficient
                 while (!allFactorsMostEfficient)
                 {
+                    bool checkFactorsAgain = false;
+
                     for (int i = 0; i < factors.Count; i++)
                     {
                         // If factor most efficient as product, remove factor, add smallest factor pair, and break to loop again
@@ -48,10 +50,14 @@ namespace BrainfuckIntegerRepresentation
                             factors.Add(factorPair[1]);
 
                             factors.RemoveAt(i);
+                            checkFactorsAgain = true;
                             break;
                         }
+                    }
 
-                        // If no factors most efficient as product, break loop
+                    // If no factors most efficient as product, break loop
+                    if (!checkFactorsAgain)
+                    {
                         allFactorsMostEfficient = true;
                     }
                 }

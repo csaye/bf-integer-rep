@@ -61,7 +61,7 @@ namespace BrainfuckIntegerRepresentation
 
         private static string FindIntRepresentation(int intToRep)
         {
-            return IntRepresentation.FindIntRepresentation(intToRep, 4);
+            return IntRepresentation.FindIntRepresentation(intToRep, 0);
         }
 
         private static void PrintRepresentation(int intToRep, string intRepresentation)
@@ -92,7 +92,8 @@ namespace BrainfuckIntegerRepresentation
 
         private static void PrintRepresentationMinimal(int intToRep, string representation)
         {
-            Console.WriteLine($"{intToRep}: {representation}");
+            //Console.WriteLine($"{intToRep}: {representation}");
+            Console.WriteLine(representation);
         }
     }
 }
