@@ -174,7 +174,7 @@ namespace BrainfuckIntegerRepresentation
                 {
                     int cellOffset = CellOffset(incrementedRep);
                     string cellOffsetString = CharString('>', cellOffset);
-                    shorterRep = $"{incrementedRep}{cellOffsetString}+";
+                    shorterRep = $"{incrementedRep}{cellOffsetString}-";
                 }
 
                 // If value less than shorter representation
@@ -182,7 +182,7 @@ namespace BrainfuckIntegerRepresentation
                 {
                     int cellOffset = CellOffset(incrementedRep);
                     string cellOffsetString = CharString('>', cellOffset);
-                    shorterRep = $"{incrementedRep}{cellOffsetString}+";
+                    shorterRep = $"{incrementedRep}{cellOffsetString}-";
                 }
             }
 

@@ -81,11 +81,11 @@ namespace BrainfuckIntegerRepresentation
 
             if (cellOffset == 1)
             {
-                Console.WriteLine($"The result will be offset by {cellOffset} cell.");
+                Console.WriteLine($"The result will be offset from the pointer by {cellOffset} cell.");
             }
             else
             {
-                Console.WriteLine($"The result will be offset by {cellOffset} cells.");
+                Console.WriteLine($"The result will be offset from the pointer by {cellOffset} cells.");
             }
         }
 
